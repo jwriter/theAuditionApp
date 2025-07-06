@@ -5,6 +5,8 @@ function createWindow () {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
+    icon: 'auditionChatGpt.ico',
+    title: 'The Audition App',
     webPreferences: {
       nodeIntegration: true
     }
