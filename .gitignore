@@ -1,0 +1,37 @@
+# Зависимости
+node_modules/
+dist/
+
+# Логи
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Конфигурация IDE и редакторов
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Кэш
+.cache/
+.next/
+.nuxt/
+
+# Сборки Electron
+release/
+out/
+
+# Файлы .env
+.env
+.env.local
+.env.*.local
+
+# Другое
+.DS_Store
+Thumbs.db
