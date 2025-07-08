@@ -1,17 +1,21 @@
 {
-  "name": "my-electron-app",
-  "version": "1.0.0",
-  "description": "",
+  "name": "audiotoni",
+  "version": "0.0.9",
+  "description": "Amazing app for improving audition",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder"
   },
+  "dependencies": {
+    "electron-store": "^8.1.0"
+  },
   "build": {
-    "appId": "com.example.myapp",
-    "productName": "The Audition app",
+    "appId": "com.mbykov.audiotoni",
+    "productName": "the Audiotoni",
     "win": {
-      "target": "portable"
+      "target": "portable",
+      "icon": "assets/AuditionChatGPT.ico"
     },
     "files": [
       "**/*"
