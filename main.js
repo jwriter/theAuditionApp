@@ -27,7 +27,6 @@ function createWindow () {
             const result = await dialog.showOpenDialog(mainWindow, {
               properties: ['openDirectory']
             });
-            console.log(result)
             if (!result.canceled && result.filePaths.length > 0) {
               const folder = result.filePaths[0];
               store.set('lastFolder', folder);
