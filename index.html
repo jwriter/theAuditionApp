@@ -6,7 +6,26 @@
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-  <div id="container">
+
+  <div class="container" id="mainContainer">
+    <div class="video-container" id="videoContainer">
+      <video id="video" controls>
+        <source src="sample.mp4" type="video/mp4">
+        Ваш браузер не поддерживает видео.
+      </video>
+      <div class="subtitle-label" id="subtitleLabel">Пример субтитров здесь</div>
+    </div>
+    <div class="side-panel" id="file-list">
+      <p>Здесь может быть информация, чат и т.д.</p>
+    </div>
+  </div>
+
+  <div class="bottom-buttons">
+    <button onclick="togglePanel()">Показать/Скрыть панель</button>
+    <button onclick="showSubtitle('Новая строка субтитров!')">Действие 2</button>
+  </div>
+
+  <!-- <div id="container">
     <div>
       <video id="video" controls></video>    
       <div id="subtitle"></div>
@@ -14,16 +33,37 @@
     <div id="file-list" class="hidden"></div>
   </div>
     <button id="loadingButton">Загрузить видео и субтитры</button>  
-    <button id="toggle-list">Toggle File List</button>
-  <!-- <div id="container">
-      <video id="video" controls></video>
-      <div id="subtitle"></div>
-  </div>  
-  <div id="controls">
-    <button id="loadingButton">Загрузить видео и субтитры</button>
-  </div> -->
+    <button id="toggle-list">Toggle File List</button> -->
 
   <script src="renderer.js"></script>
   <script src="player.js"></script>
+  
+  <script>
+    let panelVisible = true;
+
+    function togglePanel() {
+      const sidePanel = document.getElementById('file-list');
+      const container = document.getElementById('mainContainer');
+
+      panelVisible = !panelVisible;
+
+      if (panelVisible) {
+        sidePanel.classList.remove('hidden');
+      } else {
+        sidePanel.classList.add('hidden');
+      }
+    }
+
+    function showSubtitle(text) {
+      const label = document.getElementById('subtitleLabel');
+      label.textContent = text;
+
+      // Пример скрытия субтитров через 5 секунд
+      setTimeout(() => {
+        label.textContent = '';
+      }, 5000);
+    }
+  </script>
+  
 </body>
 </html>

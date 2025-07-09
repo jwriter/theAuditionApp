@@ -4,6 +4,7 @@ const Store = require('electron-store');
 const fs = require('fs');
 
 const store = new Store();
+let mainWindow; // <-- Добавили глобальную переменную
 
 function createWindow () {
   mainWindow = new BrowserWindow({
@@ -11,10 +12,14 @@ function createWindow () {
     height: 600,
     icon: path.join(__dirname, 'assets', 'AuditionChatGPT.png'),
     webPreferences: {
+      // эти параметры критически важны, если используешь preload
+      contextIsolation: true,
+      nodeIntegration: false,
       preload: path.join(__dirname, 'preload.js')
     }
   });
 
+  mainWindow.webContents.openDevTools();
   mainWindow.loadFile('index.html');
 
   const menuTemplate = [
@@ -61,12 +66,12 @@ function scanFolder(folderPath) {
 
 app.whenReady().then(createWindow);
 
-ipcMain.on('file-clicked', (_, fileName) => {
-  dialog.showMessageBox(mainWindow, {
-    message: `You clicked on file: ${fileName}`,
-    type: 'info'
-  });
-});
+// ipcMain.on('file-clicked', (_, fileName) => {
+//   dialog.showMessageBox(mainWindow, {
+//     message: `You clicked on file: ${fileName}`,
+//     type: 'info'
+//   });
+// });
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
