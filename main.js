@@ -1,3 +1,8 @@
+
+try {
+  require('electron-reloader')(module);
+} catch (_) {}
+
 const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron');
 const path = require('path');
 const Store = require('electron-store');
@@ -15,6 +20,7 @@ function createWindow () {
       // эти параметры критически важны, если используешь preload
       contextIsolation: true,
       nodeIntegration: false,
+      sandbox: false,
       preload: path.join(__dirname, 'preload.js')
     }
   });

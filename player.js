@@ -1,4 +1,7 @@
+//const path = require('path');
+
 //const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron');
+//const fs = require('fs');
 
 let inLoop = false;
 let subtitles = [];
@@ -8,71 +11,56 @@ const subtitleDiv = document.getElementById('subtitleLabel');
 const offset = 0.3; // смещение для перемотки назад
 
 const fileListEl = document.getElementById('file-list');
-//const toggleBtn = document.getElementById('toggle-list');
-
-// toggleBtn.addEventListener('click', () => {
-//   fileListEl.classList.toggle('hidden');
-// });
 
 window.electronAPI.onFileList((data) => {
   fileListEl.innerHTML = '';
   document.title = `MP4 Browser - ${data.folder}`;
-  data.files.forEach(file => {
-    const item = document.createElement('div');
-    item.textContent = file;
-    item.addEventListener('click', () => {
-      //window.electronAPI.notifyFileClicked(file);
-      loadVideo()
-    });
-    fileListEl.appendChild(item);
-  });
+  data.files.forEach(file => createFileInFilelist(data.folder, file));
 });
 
-function loadVideo() {
+function createFileInFilelist(folder, file) {
+  const item = document.createElement('div');
+  item.textContent = file;
+  item.addEventListener('click', () => {
+    loadVideo(folder, file)
+  });
+  fileListEl.appendChild(item);
+}
+
+function loadVideo(folder, filename) {
+  console.log('fn1:', folder, filename);
+    let videoPath = window.electronAPI.joinPathes(folder, filename);
+    console.log('fn2:', videoPath);
     // Подставь путь к своему видеофайлу
-    video.src = 'C:\\delete\\Friends.S01E01-h264.mp4';
+    video.src = videoPath;//'C:\\delete\\Friends.S01E01-h264.mp4';
     video.load();
 
-    // Загружаем субтитры из SRT-файла
-    fetch("C:\\delete\\2_English.srt")
-        .then(res => res.text())
-        .then(parseSRT)
-        .then(subs => {
-        subtitles = subs;
-        console.log('Субтитры загружены:', subtitles);
-        });
+    console.log(1, videoPath);
+    let parsed = window.electronAPI.parseFile(videoPath)
+    console.log(2, parsed);
+    parsed.ext = ".srt"
+    console.log(3, parsed);
+    let srtPath = window.electronAPI.formatFile(parsed)
+    console.log(4, srtPath);
 
-    console.log('Назначили src, video.readyState:', video.readyState);
-  }
+    let newFilename = filename.replace('.mp4', '.srt')
+    srtPath = window.electronAPI.joinPathes(folder, parsed.name + parsed.ext);
+    
+    if (window.electronAPI.existsSync(srtPath)){
+      console.log(srtPath);
+      fetch(srtPath)
+          .then(res => res.text())
+          .then(parseSRT)
+          .then(subs => {
+          subtitles = subs;
+          console.log('Субтитры загружены:', subtitles);
+          });
 
-// Ждем загрузки DOM, чтобы кнопка точно существовала
-// document.addEventListener("DOMContentLoaded", function () {
-//   const button = document.getElementById("loadingButton");
-//   button.addEventListener("click", function loadVideo() {
-//     // Подставь путь к своему видеофайлу
-//     video.src = 'C:\\delete\\Friends.S01E01-h264.mp4';
-//     video.load();
-
-//     // Загружаем субтитры из SRT-файла
-//     fetch("C:\\delete\\2_English.srt")
-//         .then(res => res.text())
-//         .then(parseSRT)
-//         .then(subs => {
-//         subtitles = subs;
-//         console.log('Субтитры загружены:', subtitles);
-//         });
-
-//     console.log('Назначили src, video.readyState:', video.readyState);
-//   });
-// });
-
-// ipcMain.on('file-clicked', (_, fileName) => {
-//   loadVideo()
-//   // dialog.showMessageBox(mainWindow, {
-//   //   message: `YOHUHU: ${fileName}`,
-//   //   type: 'info'
-//   // });
-// });
+      console.log('Назначили src, video.readyState:', video.readyState);
+    }else {
+      console.log('Файл ',srtPath,' не найден');
+    }
+}
 
 
 function parseSRT(data) {
