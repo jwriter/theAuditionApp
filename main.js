@@ -4,10 +4,12 @@ try {
 
 const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron');
 const path = require('path');
-const Store = require('electron-store');
 const fs = require('fs');
 
+const Store = require('electron-store');
 const store = new Store();
+console.log('Store file is at:', store.path);
+
 let mainWindow;
 
 function createWindow () {
@@ -38,7 +40,7 @@ function createWindow () {
             });
             if (!result.canceled && result.filePaths.length > 0) {
               const folder = result.filePaths[0];
-              store.set('lastFolder', folder);
+              store.set('lastFolder', folder);  
               scanFolder(folder);
             }
           }
@@ -50,11 +52,13 @@ function createWindow () {
 
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
-
-  const lastFolder = store.get('lastFolder');
-  if (lastFolder) {
-    scanFolder(lastFolder);
-  }
+  
+  mainWindow.webContents.on('did-finish-load', () => {  
+    const lastFolder = store.get('lastFolder');
+    if (lastFolder) {
+      scanFolder(lastFolder);
+    }
+  });
 }
 
 function scanFolder(folderPath) {
