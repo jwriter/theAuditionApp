@@ -1,8 +1,3 @@
-//const path = require('path');
-
-//const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron');
-//const fs = require('fs');
-
 let inLoop = false;
 let subtitles = [];
 let loopId = 0;
@@ -28,35 +23,22 @@ function createFileInFilelist(folder, file) {
 }
 
 function loadVideo(folder, filename) {
-  console.log('fn1:', folder, filename);
     let videoPath = window.electronAPI.joinPathes(folder, filename);
-    console.log('fn2:', videoPath);
-    // Подставь путь к своему видеофайлу
-    video.src = videoPath;//'C:\\delete\\Friends.S01E01-h264.mp4';
+    video.src = videoPath;
     video.load();
 
-    console.log(1, videoPath);
     let parsed = window.electronAPI.parseFile(videoPath)
-    console.log(2, parsed);
     parsed.ext = ".srt"
-    console.log(3, parsed);
-    let srtPath = window.electronAPI.formatFile(parsed)
-    console.log(4, srtPath);
-
     let newFilename = filename.replace('.mp4', '.srt')
     srtPath = window.electronAPI.joinPathes(folder, parsed.name + parsed.ext);
     
     if (window.electronAPI.existsSync(srtPath)){
-      console.log(srtPath);
       fetch(srtPath)
           .then(res => res.text())
           .then(parseSRT)
           .then(subs => {
           subtitles = subs;
-          console.log('Субтитры загружены:', subtitles);
           });
-
-      console.log('Назначили src, video.readyState:', video.readyState);
     }else {
       console.log('Файл ',srtPath,' не найден');
     }
@@ -86,7 +68,6 @@ function timeStrToSec(timeStr) {
   return parseFloat(h) * 3600 + parseFloat(m) * 60 + parseFloat(s);
 }
 
-// обновляем субтитры в зависимости от текущего времени видео
 video.addEventListener('timeupdate', () => {
   if (!subtitles.length) return;
   const t = video.currentTime;
@@ -106,7 +87,6 @@ video.addEventListener('timeupdate', () => {
   }
 });
 
-// управление клавишами
 document.addEventListener('keydown', (e) => {
   if (!subtitles.length) return;
 

@@ -1,4 +1,3 @@
-
 try {
   require('electron-reloader')(module);
 } catch (_) {}
@@ -9,7 +8,7 @@ const Store = require('electron-store');
 const fs = require('fs');
 
 const store = new Store();
-let mainWindow; // <-- Добавили глобальную переменную
+let mainWindow;
 
 function createWindow () {
   mainWindow = new BrowserWindow({
@@ -17,7 +16,6 @@ function createWindow () {
     height: 600,
     icon: path.join(__dirname, 'assets', 'AuditionChatGPT.png'),
     webPreferences: {
-      // эти параметры критически важны, если используешь preload
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false,
@@ -71,13 +69,6 @@ function scanFolder(folderPath) {
 }
 
 app.whenReady().then(createWindow);
-
-// ipcMain.on('file-clicked', (_, fileName) => {
-//   dialog.showMessageBox(mainWindow, {
-//     message: `You clicked on file: ${fileName}`,
-//     type: 'info'
-//   });
-// });
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
